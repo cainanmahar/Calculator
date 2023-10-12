@@ -7,6 +7,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="350"
     xmlns:System="clr-namespace:System;assembly=System.Runtime">
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static local:MainWindow.DigitCmd}"
+                    Executed="DigitCmdExecuted"
+                    CanExecute="DigitCmdCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.OperationCmd}"
+                    Executed="OperationCmdExecuted"
+                    CanExecute="OperationCmdCanExecute"/>
+    </Window.CommandBindings>
     <Window.Resources>
         <FontFamily x:Key="CalcInputFontFamily">Cambria Math</FontFamily>
         <System:Double x:Key="CalcInputFontSize">18</System:Double>
@@ -76,10 +84,24 @@
             <RowDefinition Height="4*"/>
         </Grid.RowDefinitions>
         <Border BorderBrush="Black" BorderThickness="1" Margin="0,10,0,10" CornerRadius="10,10,10,10" IsEnabled="False" Grid.Row="0">
-            <TextBlock Text="0123456789" FontSize="24" FontFamily="Cambria Math" TextAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Center"/>
+            <StackPanel Margin="5,5,5,5">
+                <TextBlock Text="{Binding LeftOperand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" FontSize="18" FontFamily="Cambria Math" TextAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontSize="24" FontFamily="Cambria Math" TextAlignment="Left" HorizontalAlignment="Left" Text="{Binding Operation, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+                    <TextBlock Grid.Column="1" FontSize="24" FontFamily="Cambria Math" TextAlignment="Right" HorizontalAlignment="Right" Text="{Binding RightOperand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+                </Grid>
+            </StackPanel>
         </Border>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
+                <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -89,19 +111,149 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Content="7" Grid.Column="0" Grid.Row="0" Style="{DynamicResource CalculatorInputButton}"/>
-            <Button Content="8" Grid.Column="1" Grid.Row="0" Style="{DynamicResource CalculatorInputButton}"/>
-            <Button Content="9" Grid.Column="2" Grid.Row="0" Style="{DynamicResource CalculatorInputButton}"/>
-            <Button Content="4" Grid.Column="0" Grid.Row="1" Style="{DynamicResource CalculatorInputButton}"/>
-            <Button Content="5" Grid.Column="1" Grid.Row="1" Style="{DynamicResource CalculatorInputButton}"/>
-            <Button Content="6" Grid.Column="2" Grid.Row="1" Style="{DynamicResource CalculatorInputButton}"/>
-            <Button Content="1" Grid.Column="0" Grid.Row="2" Style="{DynamicResource CalculatorInputButton}"/>
-            <Button Content="2" Grid.Column="1" Grid.Row="2" Style="{DynamicResource CalculatorInputButton}"/>
-            <Button Content="3" Grid.Column="2" Grid.Row="2" Style="{DynamicResource CalculatorInputButton}"/>
-            <Button Content="+" Grid.Column="0" Grid.Row="3" Style="{DynamicResource CalculatorInputButton}"/>
-            <Button Content="-" Grid.Column="1" Grid.Row="3" Style="{DynamicResource CalculatorInputButton}"/>
-            <Button Content="=" Grid.Column="2" Grid.Row="3" Style="{DynamicResource CalculatorInputButton}"/>
+            
+
+            <Button
+                Content="AC"
+                Grid.Column="0"
+                Grid.Row="0"
+                Style="{DynamicResource CalculatorInputButton}"
+                Click="AllClear_Click"/>
+            <Button
+                Content="C"
+                Grid.Column="1"
+                Grid.Row="0"
+                Style="{DynamicResource CalculatorInputButton}"
+                Click="Clear_Click"/>
+            <Button
+                Content="+/-"
+                Grid.Column="2"
+                Grid.Row="0"
+                Style="{DynamicResource CalculatorInputButton}"
+                Click="Sign_Click"/>
+            <Button
+                Content="/"
+                Grid.Column="3"
+                Grid.Row="0"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.OperationCmd}"
+                CommandParameter="/"/>
+
+            
+            <Button
+                Content="7"
+                Grid.Column="0"
+                Grid.Row="1"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.DigitCmd}"
+                CommandParameter="7"/>
+            <Button
+                Content="8"
+                Grid.Column="1"
+                Grid.Row="1"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.DigitCmd}"
+                CommandParameter="8"/>
+            <Button
+                Content="9"
+                Grid.Column="2"
+                Grid.Row="1"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.DigitCmd}"
+                CommandParameter="9"/>
+            <Button
+                Content="*"
+                Grid.Column="3"
+                Grid.Row="1"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.OperationCmd}"
+                CommandParameter="*"/>
+
+            
+            <Button
+                Content="4"
+                Grid.Column="0"
+                Grid.Row="2"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.DigitCmd}"
+                CommandParameter="4"/>
+            <Button
+                Content="5"
+                Grid.Column="1"
+                Grid.Row="2"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.DigitCmd}"
+                CommandParameter="5"/>
+            <Button
+                Content="6"
+                Grid.Column="2"
+                Grid.Row="2"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.DigitCmd}"
+                CommandParameter="6"/>
+            <Button
+                Content="-"
+                Grid.Column="3"
+                Grid.Row="2"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.OperationCmd}"
+                CommandParameter="-"/>
+
+            
+            <Button
+                Content="1"
+                Grid.Column="0"
+                Grid.Row="3"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.DigitCmd}"
+                CommandParameter="1"/>
+            <Button
+                Content="2"
+                Grid.Column="1"
+                Grid.Row="3"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.DigitCmd}"
+                CommandParameter="2"/>
+            <Button
+                Content="3"
+                Grid.Column="2"
+                Grid.Row="3"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.DigitCmd}"
+                CommandParameter="3"/>
+            <Button
+                Content="+"
+                Grid.Column="3"
+                Grid.Row="3"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.OperationCmd}"
+                CommandParameter="+"/>
+
+            
+            <Button
+                Content="0"
+                Grid.Column="0"
+                Grid.Row="4"
+                Grid.ColumnSpan="2"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.DigitCmd}"
+                CommandParameter="0"/>
+            <Button
+                Content="."
+                Grid.Column="2"
+                Grid.Row="4"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.DigitCmd}"
+                CommandParameter="."/>
+            <Button
+                Content="="
+                Grid.Column="3"
+                Grid.Row="4"
+                Style="{DynamicResource CalculatorInputButton}"
+                Command="{x:Static local:MainWindow.OperationCmd}"
+                CommandParameter="="/>
         </Grid>
     </Grid>
 </Window>
